@@ -11,10 +11,15 @@
         <div class="logo">
           <a href="./index.html">Oju Ọjọ</a>
         </div>
-        <div class="search-container">
-          <input type="text" placeholder="Search" class="search-input" />
-          <button class="search-btn">Search</button>
-        </div>
+        <nav class="nav">
+          <input id="search-input" type="search" placeholder="Search" class="search-input" />
+          <div class="switch">
+            <input type="radio" name="unit" id="unit-c" value="C" checked />
+            <label for="unit-c">°C</label>
+            <input type="radio" name="unit" id="unit-f" value="F" />
+            <label for="unit-f">°F</label>
+          </div>
+        </nav>
       </header>
       <main class="main"></main>
       <footer class="footer"></footer>
