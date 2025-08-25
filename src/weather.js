@@ -72,7 +72,7 @@ function processDayWeather(data) {
   }
 }
 
-export default async function processData(
+export default async function getWeatherData(
   location = "toronto",
   unitGroup = "metric"
 ) {
@@ -85,7 +85,7 @@ export default async function processData(
       weatherArray.push(dayWeather);
     });
     return weatherArray;
-    
+
   } catch (error) {
     console.error("Error processing weather data:", error);
     throw error;
