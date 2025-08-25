@@ -4,7 +4,7 @@ const BASE_URL =
   "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/";
 let contentType = "json"; // Response format
 
-export default async function fetchWeatherData(
+async function fetchWeatherData(
   location = "toronto",
   unitGroup = "metric"
 ) {
@@ -22,7 +22,7 @@ export default async function fetchWeatherData(
   }
 }
 
-function processWeatherData(data) {
+function getFirstFiveDaysWeatherData(data) {
   // first get the first 5 days of the weather forecast
   try {
     const days = data.days.slice(0, 5);
@@ -33,36 +33,27 @@ function processWeatherData(data) {
   }
 }
 
-function getCurrentDayWeather(data, index = 0) {
-  // getting today's weather data
-  try {
-    const today = data.days[index];
-    return today;
-  } catch (error) {
-    console.error("Error getting today's weather data:", error);
-    throw error;
-  }
-}
-
 function processDayWeather(data) {
   // getting the data we need from the api response
   try {
-    const day = getCurrentDayWeather(data, index);
-    const temperature = day.temp;
-    const tempMax = day.tempmax;
-    const tempMin = day.tempmin;
-    const feelsLike = day.feelslike;
-    const humidity = day.humidity;
-    const windSpeed = day.windspeed;
-    const pressure = day.pressure;
-    const visibility = day.visibility;
-    const sunrise = day.sunrise;
-    const sunset = day.sunset;
-    const conditions = day.conditions;
-    const description = day.description;
-    const icon = day.icon;
+    const date = data.datetime;
+    const temperature = data.temp;
+    const tempMax = data.tempmax;
+    const tempMin = data.tempmin;
+    const feelsLike = data.feelslike;
+    const humidity = data.humidity;
+    const windSpeed = data.windspeed;
+    const pressure = data.pressure;
+    const visibility = data.visibility;
+    const sunrise = data.sunrise;
+    const sunset = data.sunset;
+    const conditions = data.conditions;
+    const description = data.description;
+    const icon = data.icon;
+    const hours = data.hours;
 
     return {
+      date,
       temperature,
       tempMax,
       tempMin,
@@ -76,9 +67,22 @@ function processDayWeather(data) {
       conditions,
       description,
       icon,
+      hours,
     };
   } catch (error) {
     console.error("Error processing day's weather data:", error);
     throw error;
   }
+}
+
+export default async function processData(location = "toronto",
+  unitGroup = "metric") {
+  const data = await fetchWeatherData(location, unitGroup);
+  const fiveDays = getFirstFiveDaysWeatherData(data);
+  const weatherArray = [];
+  fiveDays.forEach((day) => {
+    const dayWeather = processDayWeather(day);
+    weatherArray.push(dayWeather);
+  });
+  return weatherArray;
 }
