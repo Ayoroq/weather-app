@@ -3,6 +3,7 @@ import "./style.css";
 import getWeatherData from "./weather.js";
 import fetchGeoLocation from "./geo-location.js";
 import { fetchCities } from "./geo-location.js";
+import { renderSearchResults } from "./render-weather.js";
 
 // const data = await getWeatherData();
 // const location = await fetchGeoLocation();
@@ -12,6 +13,7 @@ import { fetchCities } from "./geo-location.js";
 
 const main = document.querySelector(".main");
 const search = document.querySelector(".search-input");
+const searchDropDown = document.querySelector(".search-dropdown");
 
 function debounce(func, delay) {
   let timer; // Stores the timeout ID
@@ -37,19 +39,39 @@ async function searchForCities() {
   renderSearchResults(cities);
 }
 
+// rendering search result after typing
 const debouncedSearch = debounce(searchForCities, 300);
 search.addEventListener("input", debouncedSearch);
 
-function renderSearchResults(cities) {
-  const searchDropDown = document.querySelector('.search-dropdown')
-  searchDropDown.innerHTML = ''; // Clear previous results
+//what happens when you click on a search result
+searchDropDown.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("search-result-item")) {
+    //clear the dropdown
+    searchDropDown.innerHTML = "";
+    const lat = e.target.dataset.lat;
+    const lon = e.target.dataset.lon;
+    const weatherData = await getWeatherData(lat, lon);
+    console.log(weatherData);
+  }
+});
 
-  cities.forEach((city) => {
-    const cityElement = document.createElement("button");
-    cityElement.classList.add('search-result-item')
-    cityElement.textContent = `${city.name}, ${city.state}, ${city.country}`;
-    cityElement.dataset.lat = city.lat;
-    cityElement.dataset.lon = city.lon;
-    searchDropDown.appendChild(cityElement);
-  });
+// if the user clicks anywhere outside the dropdown, clear the dropdown
+document.addEventListener("click", (e) => {
+  if (!searchDropDown.contains(e.target) && !search.contains(e.target)) {
+    searchDropDown.innerHTML = "";
+  }
+});
+
+async function initialState() {
+  const location = await fetchGeoLocation();
+  const lat = location.latitude;
+  const lon = location.longitude;
+  const city = location.city;
+
+  const weatherData = await getWeatherData(lat, lon);
+  const today = weatherData[0];
+  console.log(today);
+  console.log(city);
 }
+
+//initialState();

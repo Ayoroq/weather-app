@@ -6,8 +6,12 @@ const BASE_URL =
   "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/";
 let contentType = "json"; // Response format
 
-async function fetchWeatherData(location = "toronto", unitGroup = "metric") {
-  const url = `${BASE_URL}${location}?unitGroup=${unitGroup}&key=${API_KEY}&contentType=${contentType}`;
+async function fetchWeatherData(
+  latitude = 38.9697,
+  longitude = -77.385,
+  unitGroup = "metric"
+) {
+  const url = `${BASE_URL}${latitude},${longitude}?unitGroup=${unitGroup}&key=${API_KEY}&contentType=${contentType}`;
   try {
     const response = await fetch(url, { mode: "cors" });
     if (!response.ok) {
@@ -52,7 +56,6 @@ function processDayWeather(data) {
     const hours = data.hours;
     const city = data.Address;
 
-
     return {
       date,
       temperature,
@@ -78,11 +81,12 @@ function processDayWeather(data) {
 }
 
 export default async function getWeatherData(
-  location = "toronto",
+  latitude = 38.9697,
+  longitude = -77.385,
   unitGroup = "metric"
 ) {
   try {
-    const data = await fetchWeatherData(location, unitGroup);
+    const data = await fetchWeatherData(latitude, longitude, unitGroup);
     const fiveDays = getFirstFiveDaysWeatherData(data);
     const weatherArray = [];
     fiveDays.forEach((day) => {
@@ -91,7 +95,6 @@ export default async function getWeatherData(
       weatherArray.push(dayWeather);
     });
     return weatherArray;
-
   } catch (error) {
     console.error("Error processing weather data:", error);
     throw error;

@@ -19,9 +19,7 @@
               placeholder="Search"
               class="search-input"
             />
-            <div class="search-dropdown">
-
-            </div>
+            <div class="search-dropdown"></div>
           </div>
           <div class="switch">
             <input type="radio" name="unit" id="unit-c" value="C" checked />
@@ -31,7 +29,68 @@
           </div>
         </nav>
       </header>
-      <main class="main"></main>
+      <main class="main">
+        <section class="current-temperature-container">
+          <p class="city">Toronto</p>
+          <p class="current-temperature">24° C</p>
+          <p class="description">Mostly Cloudy</p>
+          <p class="feels-like">Feels like 19° C</p>
+        </section>
+        <section class="info-container">
+          <div class="info">
+            <p class="sunrise">Sunrise: <span>06:21</span></p>
+            <p class="temp-range">High/Low: <span>20°/10°</span></p>
+            <p class="humidity">Humidity: <span>50%</span></p>
+            <p class="pressure">Pressure: <span>1007.5 mb</span></p>
+            <p class="visibility">Visibility: <span>10km</span></p>
+          </div>
+          <div class="info">
+            <p class="sunset">Sunset: <span>20:10</span></p>
+            <p class="wind-speed">Wind-speed: <span>10km/h</span></p>
+            <p class="precipitation">Precipitation: <span>0%</span></p>
+            <p class="air-quality">Air Quality Index: <span>1</span></p>
+            <p class="moon-phase">Moon Phase: <span>Waxing Crescent</span></p>
+          </div>
+        </section>
+        <section class="summary-container">
+          <div class="summary">
+            <p class="summary-head"><span>Toronto's</span>Weather Today:</p>
+            <p class="summary-text">
+              Expect a mostly sunny morning with temps around 18-22°C. The
+              afternoon will be warmer, reaching a high of 25°C under partly
+              cloudy skies. Light showers are possible in the evening (60%
+              chance), before clearing overnight with lows around 17°C.
+            </p>
+          </div>
+        </section>
+        <section class="forecast-container">
+          <div class="forecast">
+            <p class="forecast-header">5 Days Forecast</p>
+            <div class="forecast-days">
+                <div class="forecast-day">
+                    <p>Today <span>24°C</span></p>
+                    <img src="#" alt="">
+                </div>
+                <div class="forecast-day">
+                    <p>Tomorrow <span>22°C</span></p>
+                    <img src="#" alt="">
+                </div>
+                <div class="forecast-day">
+                    <p>Friday <span>20°C</span></p>
+                    <img src="#" alt="">
+                </div>
+                <div class="forecast-day">
+                    <p>Saturday <span>18°C</span></p>
+                    <img src="#" alt="">
+                </div>
+                <div class="forecast-day">
+                    <p>Sunday <span>16°C</span></p>
+                    <img src="#" alt="">
+                </div>
+            </div>
+          </div>
+        </section>
+      </main>
       <footer class="footer"></footer>
     </div>
   </body>

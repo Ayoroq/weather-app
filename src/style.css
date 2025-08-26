@@ -39,7 +39,6 @@ a {
   border-bottom: 1px solid black;
   outline: none;
   background: none;
-  margin: 0 auto;
 }
 
 .search-container {
@@ -49,6 +48,7 @@ a {
   max-width: fit-content;
   align-items: center;
   gap: 1rem;
+  margin: 0 auto;
 }
 
 .search-dropdown {
