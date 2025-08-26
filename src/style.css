@@ -42,6 +42,36 @@ a {
   margin: 0 auto;
 }
 
+.search-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: fit-content;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.search-result-item {
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.search-result-item:hover{
+    background-color: cornflowerblue;
+}
+
 .switch {
   margin-left: auto;
 }

@@ -1,4 +1,6 @@
 // Please do not steal the API key. It is meant for educational/practice purposes only.
+import generateDailySummary from "./summary.js";
+
 const API_KEY = "A6P5L4NJZV3YQCGV3RQ9892UR";
 const BASE_URL =
   "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/";
@@ -48,6 +50,8 @@ function processDayWeather(data) {
     const description = data.description;
     const icon = data.icon;
     const hours = data.hours;
+    const city = data.Address;
+
 
     return {
       date,
@@ -65,6 +69,7 @@ function processDayWeather(data) {
       description,
       icon,
       hours,
+      city,
     };
   } catch (error) {
     console.error("Error processing day's weather data:", error);
@@ -82,6 +87,7 @@ export default async function getWeatherData(
     const weatherArray = [];
     fiveDays.forEach((day) => {
       const dayWeather = processDayWeather(day);
+      dayWeather.summary = generateDailySummary(dayWeather);
       weatherArray.push(dayWeather);
     });
     return weatherArray;
@@ -91,3 +97,5 @@ export default async function getWeatherData(
     throw error;
   }
 }
+
+const data = await fetchWeatherData();
