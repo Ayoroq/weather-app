@@ -1,3 +1,9 @@
+import getWeatherData from "./weather.js";
+
+// Threshold for adding precipitation warnings to summaries
+const PRECIPITATION_THRESHOLD = 30;
+
+// Template sentences for different times of day and weather conditions
 const templates = {
   morning: [
     "Expect a {condition} morning with temperatures starting around {min}-{max}°C.",
@@ -45,3 +51,113 @@ const templates = {
     "Weather models suggest a {precip}% chance of wet conditions.",
   ],
 };
+
+// Split hourly data into morning, afternoon, evening, and night periods
+function splitDayParts(data) {
+  const hours = data.hours;
+  const morning = hours.filter((h) => {
+    const hour = parseInt(h.datetime.split(":")[0], 10);
+    return hour >= 6 && hour < 12;
+  });
+
+  const afternoon = hours.filter((h) => {
+    const hour = parseInt(h.datetime.split(":")[0], 10);
+    return hour >= 12 && hour < 18;
+  });
+
+  const evening = hours.filter((h) => {
+    const hour = parseInt(h.datetime.split(":")[0], 10);
+    return hour >= 18 && hour < 24;
+  });
+
+  const night = hours.filter((h) => {
+    const hour = parseInt(h.datetime.split(":")[0], 10);
+    return hour >= 0 && hour < 6;
+  });
+
+  return { morning, afternoon, evening, night };
+}
+
+// Analyze a block of hours to get min/max temps, most common condition, and max precipitation
+function summarizeBlock(hoursBlock) {
+  if (hoursBlock.length === 0) return null;
+
+  // Get temperature range
+  const temps = hoursBlock.map((h) => h.temp);
+  const min = Math.min(...temps);
+  const max = Math.max(...temps);
+
+  // Find the most frequent weather condition
+  const conditionCounts = {};
+  hoursBlock.forEach((h) => {
+    const hoursCondition = h.conditions;
+    conditionCounts[hoursCondition] = (conditionCounts[hoursCondition] || 0) + 1;
+  });
+  const condition = Object.entries(conditionCounts).sort(
+    (a, b) => b[1] - a[1]
+  )[0][0];
+
+  // Get highest precipitation probability
+  const precip = Math.max(...hoursBlock.map((h) => h.precipprob || 0));
+
+  return { min, max, condition, precip };
+}
+
+// Process a full day's data into summarized time periods
+function getDayData(day) {
+  const blocks = splitDayParts(day);
+  const morning = summarizeBlock(blocks.morning);
+  const afternoon = summarizeBlock(blocks.afternoon);
+  const evening = summarizeBlock(blocks.evening);
+  const night = summarizeBlock(blocks.night);
+  return { morning, afternoon, evening, night };
+}
+
+// Select a random template from the given category
+function pickTemplate(category) {
+  const choices = templates[category];
+  if (!choices || choices.length === 0) {
+    return "Weather conditions are {condition} with temperatures around {min}-{max}°C.";
+  }
+  return choices[Math.floor(Math.random() * choices.length)];
+}
+
+// Replace placeholders in template with actual weather data
+function fillTemplate(template, data) {
+  return template
+    .replace("{condition}", data.condition.toLowerCase())
+    .replace("{min}", data.min)
+    .replace("{max}", data.max)
+    .replace("{precip}", data.precip);
+}
+
+// Create a weather summary for a specific time period
+function buildPeriodSummary(category, data) {
+  if (!data) return "";
+
+  // Generate base summary sentence
+  let summary = fillTemplate(pickTemplate(category), data);
+
+  // If precipitation chance is above threshold, add a rain-related sentence
+  if (data.precip > PRECIPITATION_THRESHOLD) {
+    const precipSentence = fillTemplate(pickTemplate("precipitation"), data);
+    summary += " " + precipSentence;
+  }
+
+  return summary;
+}
+
+// Generate a complete daily weather summary from data for a day
+export default function generateDailySummary(day) {
+  const { morning, afternoon, evening, night } = getDayData(day);
+
+  const summaryParts = [];
+
+  if (morning) summaryParts.push(buildPeriodSummary("morning", morning));
+  if (afternoon) summaryParts.push(buildPeriodSummary("afternoon", afternoon));
+  if (evening) summaryParts.push(buildPeriodSummary("evening", evening));
+  if (night) summaryParts.push(buildPeriodSummary("night", night));
+
+  // Combine all time period summaries into one narrative
+  return summaryParts.join(" ");
+}
