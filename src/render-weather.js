@@ -56,6 +56,21 @@ function formatDate(dateString) {
   return date.toLocaleDateString('en-US', { weekday: 'long' });
 }
 
+function getMoonPhaseName(moonPhase) {
+  const phase = parseFloat(moonPhase);
+  
+  if (phase === 0) return "New Moon";
+  if (phase > 0 && phase < 0.25) return "Waxing Crescent";
+  if (phase === 0.25) return "First Quarter";
+  if (phase > 0.25 && phase < 0.5) return "Waxing Gibbous";
+  if (phase === 0.5) return "Full Moon";
+  if (phase > 0.5 && phase < 0.75) return "Waning Gibbous";
+  if (phase === 0.75) return "Last Quarter";
+  if (phase > 0.75 && phase < 1) return "Waning Crescent";
+  
+  return "Unknown";
+}
+
 function createCurrentWeatherSection(currentDay, location, tempUnit) {
   const section = document.createElement('section');
   section.className = 'current-temperature-container';
@@ -73,7 +88,7 @@ function createCurrentWeatherSection(currentDay, location, tempUnit) {
   
   const temp = document.createElement('p');
   temp.className = 'current-temperature';
-  temp.textContent = `${Math.round(currentDay.temp)}${tempUnit}`;
+  temp.textContent = `${Math.round(currentDay.temperature)}${tempUnit}`;
   
   const description = document.createElement('p');
   description.className = 'description';
@@ -81,7 +96,7 @@ function createCurrentWeatherSection(currentDay, location, tempUnit) {
   
   const feelsLike = document.createElement('p');
   feelsLike.className = 'feels-like';
-  feelsLike.textContent = `Feels like ${Math.round(currentDay.feelslike)}${tempUnit}`;
+  feelsLike.textContent = `Feels like ${Math.round(currentDay.feelsLike)}${tempUnit}`;
   
   currentWeather.appendChild(img);
   currentWeather.appendChild(temp);
@@ -115,7 +130,7 @@ function createInfoSection(currentDay) {
   tempRange.className = 'temp-range';
   tempRange.textContent = 'High/Low: ';
   const tempRangeSpan = document.createElement('span');
-  tempRangeSpan.textContent = `${Math.round(currentDay.tempmax)}°/${Math.round(currentDay.tempmin)}°`;
+  tempRangeSpan.textContent = `${Math.round(currentDay.tempMax)}°/${Math.round(currentDay.tempMin)}°`;
   tempRange.appendChild(tempRangeSpan);
   
   const humidity = document.createElement('p');
@@ -151,7 +166,7 @@ function createInfoSection(currentDay) {
   windSpeed.className = 'wind-speed';
   windSpeed.textContent = 'Wind-speed: ';
   const windSpeedSpan = document.createElement('span');
-  windSpeedSpan.textContent = `${Math.round(currentDay.windspeed)}km/h`;
+  windSpeedSpan.textContent = `${Math.round(currentDay.windSpeed)}km/h`;
   windSpeed.appendChild(windSpeedSpan);
   
   const precipitation = document.createElement('p');
@@ -161,18 +176,18 @@ function createInfoSection(currentDay) {
   precipitationSpan.textContent = `${currentDay.precipprob}%`;
   precipitation.appendChild(precipitationSpan);
   
-  const airQuality = document.createElement('p');
-  airQuality.className = 'air-quality';
-  airQuality.textContent = 'Air Quality Index: ';
-  const airQualitySpan = document.createElement('span');
-  airQualitySpan.textContent = 'N/A';
-  airQuality.appendChild(airQualitySpan);
+  const uvIndex = document.createElement('p');
+  uvIndex.className = 'uv-index';
+  uvIndex.textContent = 'UV Index: ';
+  const uvIndexSpan = document.createElement('span');
+  uvIndexSpan.textContent = currentDay.uvindex || '0';
+  uvIndex.appendChild(uvIndexSpan);
   
   const moonPhase = document.createElement('p');
   moonPhase.className = 'moon-phase';
   moonPhase.textContent = 'Moon Phase: ';
   const moonPhaseSpan = document.createElement('span');
-  moonPhaseSpan.textContent = currentDay.moonphase;
+  moonPhaseSpan.textContent = getMoonPhaseName(currentDay.moonphase);
   moonPhase.appendChild(moonPhaseSpan);
   
   info1.appendChild(sunrise);
@@ -184,7 +199,7 @@ function createInfoSection(currentDay) {
   info2.appendChild(sunset);
   info2.appendChild(windSpeed);
   info2.appendChild(precipitation);
-  info2.appendChild(airQuality);
+  info2.appendChild(uvIndex);
   info2.appendChild(moonPhase);
   
   section.appendChild(info1);
@@ -232,7 +247,7 @@ function createForecastSection(days, tempUnit) {
     const dayInfo = document.createElement('p');
     dayInfo.textContent = formatDate(day.datetime) + ' ';
     const tempSpan = document.createElement('span');
-    tempSpan.textContent = `${Math.round(day.tempmin)}${tempUnit} ---- ${Math.round(day.tempmax)}${tempUnit}`;
+    tempSpan.textContent = `${Math.round(day.tempMin)}${tempUnit} ---- ${Math.round(day.tempMax)}${tempUnit}`;
     dayInfo.appendChild(tempSpan);
     
     const img = document.createElement('img');
@@ -250,17 +265,17 @@ function createForecastSection(days, tempUnit) {
   return section;
 }
 
-export default function renderWeather(weatherData, unitGroup = "metric", location) {
+export default function renderWeather(currentWeather, fiveDaysWeather, unitGroup = "metric", location) {
   const main = document.querySelector('.main');
-  const currentDay = weatherData[0];
+  const currentDay = fiveDaysWeather[0];
   const tempUnit = unitGroup === "metric" ? "°C" : "°F";
   
   // Clear existing content
   main.textContent = '';
   
   // Create and append sections
-  main.appendChild(createCurrentWeatherSection(currentDay, location, tempUnit));
+  main.appendChild(createCurrentWeatherSection(currentWeather, location, tempUnit));
   main.appendChild(createInfoSection(currentDay));
   main.appendChild(createSummarySection(currentDay, location));
-  main.appendChild(createForecastSection(weatherData, tempUnit));
+  main.appendChild(createForecastSection(fiveDaysWeather, tempUnit));
 }

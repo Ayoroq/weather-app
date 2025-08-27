@@ -7,8 +7,8 @@ const BASE_URL =
 let contentType = "json"; // Response format
 
 async function fetchWeatherData(
-  latitude = 38.9697,
-  longitude = -77.385,
+  latitude = 43.6534817,
+  longitude = -79.3839347,
   unitGroup = "metric"
 ) {
   const url = `${BASE_URL}${latitude},${longitude}?unitGroup=${unitGroup}&key=${API_KEY}&contentType=${contentType}`;
@@ -28,8 +28,9 @@ async function fetchWeatherData(
 function getFirstFiveDaysWeatherData(data) {
   // first get the first 5 days of the weather forecast
   try {
-    const days = data.days.slice(0, 5);
-    return days;
+    const currentConditions = data.currentConditions;
+    const fiveDays = data.days.slice(0, 5);
+    return { currentConditions, fiveDays};
   } catch (error) {
     console.error("Error processing weather data:", error);
     throw error;
@@ -52,9 +53,11 @@ function processDayWeather(data) {
     const sunset = data.sunset;
     const conditions = data.conditions;
     const description = data.description;
+    const moonphase = data.moonphase;
+    const precipprob = data.precipprob;
     const icon = data.icon;
     const hours = data.hours;
-    const city = data.Address;
+    const uvindex = data.uvindex;
 
     return {
       date,
@@ -70,9 +73,11 @@ function processDayWeather(data) {
       sunset,
       conditions,
       description,
+      moonphase,
+      precipprob,
       icon,
       hours,
-      city,
+      uvindex,
     };
   } catch (error) {
     console.error("Error processing day's weather data:", error);
@@ -87,18 +92,17 @@ export default async function getWeatherData(
 ) {
   try {
     const data = await fetchWeatherData(latitude, longitude, unitGroup);
-    const fiveDays = getFirstFiveDaysWeatherData(data);
+    const { currentConditions, fiveDays } = getFirstFiveDaysWeatherData(data);
     const weatherArray = [];
+    const currentWeather = processDayWeather(currentConditions);
     fiveDays.forEach((day) => {
       const dayWeather = processDayWeather(day);
       dayWeather.summary = generateDailySummary(dayWeather);
       weatherArray.push(dayWeather);
     });
-    return weatherArray;
+    return { currentWeather, fiveDaysWeather: weatherArray};
   } catch (error) {
     console.error("Error processing weather data:", error);
     throw error;
   }
-}
-
-const data = await fetchWeatherData();
+}   

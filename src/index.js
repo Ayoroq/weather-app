@@ -69,11 +69,9 @@ async function initialState() {
   const lon = location.longitude;
   const city = location.city;
 
-  const weatherData = await getWeatherData(lat, lon);
-  renderWeather(weatherData, "metric", city);
-  const today = weatherData[0];
-  console.log(today);
-  console.log(city);
+  const { currentWeather, fiveDaysWeather } = await getWeatherData(lat, lon);
+  renderWeather(currentWeather,fiveDaysWeather, "metric", city);
+  console.log(lat,lon)
 }
 
 initialState();
