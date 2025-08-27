@@ -134,3 +134,40 @@ a {
   gap: 0.5rem;
   text-align: left;
 }
+
+/* This is for the 3rd section. The summary */
+.summary-container{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.summary-head{
+    font-size: 1.25rem;
+}
+
+
+/* This is for the 4th section. The forecast */
+.forecast-container{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.forecast-head{
+    font-size: 1.25rem;
+}
+
+.forecast-days{
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.forecast-day{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
