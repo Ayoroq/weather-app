@@ -4,6 +4,7 @@ import getWeatherData from "./weather.js";
 import fetchGeoLocation from "./geo-location.js";
 import { fetchCities } from "./geo-location.js";
 import { renderSearchResults } from "./render-weather.js";
+import renderWeather from "./render-weather.js";
 
 // const data = await getWeatherData();
 // const location = await fetchGeoLocation();
@@ -69,9 +70,10 @@ async function initialState() {
   const city = location.city;
 
   const weatherData = await getWeatherData(lat, lon);
+  renderWeather(weatherData, "metric", city);
   const today = weatherData[0];
   console.log(today);
   console.log(city);
 }
 
-//initialState();
+initialState();

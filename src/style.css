@@ -171,3 +171,10 @@ a {
     gap: 0.5rem;
     cursor: pointer;
 }
+
+.forecast-day p{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
