@@ -16,6 +16,7 @@ const main = document.querySelector(".main");
 const search = document.querySelector(".search-input");
 const searchDropDown = document.querySelector(".search-dropdown");
 
+
 function debounce(func, delay) {
   let timer; // Stores the timeout ID
 
@@ -49,18 +50,27 @@ searchDropDown.addEventListener("click", async (e) => {
   if (e.target.classList.contains("search-result-item")) {
     //clear the dropdown
     searchDropDown.innerHTML = "";
-    const lat = e.target.dataset.lat;
-    const lon = e.target.dataset.lon;
-    const weatherData = await getWeatherData(lat, lon);
-    console.log(weatherData);
+    currentLat = e.target.dataset.lat;
+    currentLon = e.target.dataset.lon;
+    city = e.target.dataset.name; 
+
+    const selectedUnit = document.querySelector('input[name="unit"]:checked');
+    const unitGroup = selectedUnit.value === "C" ? "metric" : "us";
+    
+    const { currentWeather, fiveDaysWeather } = await getWeatherData(
+      currentLat,
+      currentLon,
+      unitGroup
+    );
+    renderWeather(currentWeather, fiveDaysWeather, unitGroup, city);
   }
 });
 
 //event listener for when the user changes the unit from Celsius to Fahrenheit or vice versa
-const unitToggle = document.querySelectorAll('input[name="unit"]')
+const unitToggle = document.querySelectorAll('input[name="unit"]');
 unitToggle.forEach((unit) => {
   unit.addEventListener("change", async (e) => {
-    const selectedUnit = e.target.value === 'C' ? 'metric' : 'us';
+    const selectedUnit = e.target.value === "C" ? "metric" : "us";
     const { currentWeather, fiveDaysWeather } = await getWeatherData(
       currentLat,
       currentLon,
@@ -83,9 +93,11 @@ async function initialState() {
   currentLon = location.longitude;
   city = location.city;
 
-  const { currentWeather, fiveDaysWeather } = await getWeatherData(currentLat, currentLon);
+  const { currentWeather, fiveDaysWeather } = await getWeatherData(
+    currentLat,
+    currentLon
+  );
   renderWeather(currentWeather, fiveDaysWeather, "metric", city);
-  console.log(currentLat, currentLon);
 }
 
 initialState();

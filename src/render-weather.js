@@ -17,6 +17,7 @@ export function renderSearchResults(cities) {
       }
       cityElement.dataset.lat = city.lat;
       cityElement.dataset.lon = city.lon;
+      cityElement.dataset.name = city.name;
       searchDropDown.appendChild(cityElement);
     });
   } catch (error) {
@@ -241,7 +242,7 @@ function createInfoSection(currentDay, unitGroup = "metric") {
   return section;
 }
 
-function createSummarySection(currentDay, location) {
+function createSummarySection(currentDay, location, unitGroup = "metric") {
   const section = document.createElement('section');
   section.className = 'summary-container';
   
@@ -266,7 +267,7 @@ function createSummarySection(currentDay, location) {
   
   const summaryText = document.createElement('p');
   summaryText.className = 'summary-text';
-  summaryText.textContent = generateDailySummary(currentDay);
+  summaryText.textContent = generateDailySummary(currentDay, unitGroup);
   
   section.appendChild(summaryHead);
   section.appendChild(summaryText);
@@ -341,7 +342,7 @@ export function updateDayView(selectedDay, location, tempUnit, currentWeather, u
   infoSection.replaceWith(newInfoSection);
   
   // Replace summary section
-  const newSummarySection = createSummarySection(selectedDay, location);
+  const newSummarySection = createSummarySection(selectedDay, location, unitGroup);
   summarySection.replaceWith(newSummarySection);
 }
 
@@ -356,6 +357,6 @@ export default function renderWeather(currentWeather, fiveDaysWeather, unitGroup
   // Create and append sections
   main.appendChild(createCurrentWeatherSection(currentWeather, location, tempUnit));
   main.appendChild(createInfoSection(currentDay, unitGroup));
-  main.appendChild(createSummarySection(currentDay, location));
+  main.appendChild(createSummarySection(currentDay, location, unitGroup));
   main.appendChild(createForecastSection(fiveDaysWeather, tempUnit, location, currentWeather));
 } 

@@ -6,29 +6,29 @@ const PRECIPITATION_THRESHOLD = 30;
 // Template sentences for different times of day and weather conditions
 const templates = {
   morning: [
-    "Expect a {condition} morning with temperatures starting around {min}-{max}°C.",
+    "Expect a {condition} morning with temperatures starting around {min}°C-{max}°C.",
     "The day begins {condition}, with early temperatures between {min}°C and {max}°C.",
     "Morning hours will be {condition}, ranging from {min} to {max}°C.",
     "Start your day with {condition} skies and comfortable {min}-{max}°C temperatures.",
     "Dawn breaks with {condition} conditions and temps around {min}°C, rising to {max}°C.",
     "Early risers will find {condition} weather with morning lows near {min}°C.",
-    "The sunrise brings {condition} skies and pleasant {min}-{max}°C temperatures.",
+    "The sunrise brings {condition} skies and pleasant {min}°C-{max}°C temperatures.",
   ],
   afternoon: [
     "By the afternoon, conditions will be {condition}, with highs near {max}°C.",
     "The afternoon looks {condition}, as temperatures climb toward {max}°C.",
-    "Afternoon skies will be {condition}, with temps hovering between {min}-{max}°C.",
+    "Afternoon skies will be {condition}, with temps hovering between {min}°C-{max}°C.",
     "Midday brings {condition} weather with peak temperatures reaching {max}°C.",
     "The warmest part of the day features {condition} skies and {max}°C highs.",
     "Lunch time will be {condition} with temperatures peaking around {max}°C.",
     "Expect {condition} conditions throughout the afternoon with highs of {max}°C.",
   ],
   evening: [
-    "During the evening, expect {condition}, with temperatures easing to {min}-{max}°C.",
+    "During the evening, expect {condition}, with temperatures easing to {min}°C-{max}°C.",
     "The evening brings {condition}, and a {precip}% chance of rain.",
     "As night approaches, {condition} skies dominate, with temps cooling to {min}°C.",
-    "Sunset hours feature {condition} weather as temperatures drop to {min}-{max}°C.",
-    "The evening will be {condition} with comfortable {min}-{max}°C temperatures.",
+    "Sunset hours feature {condition} weather as temperatures drop to {min}°C-{max}°C.",
+    "The evening will be {condition} with comfortable {min}°C-{max}°C temperatures.",
     "As daylight fades, {condition} conditions persist with temps around {min}°C.",
     "Dinner time brings {condition} skies and cooling temperatures near {min}°C.",
   ],
@@ -123,8 +123,10 @@ function pickTemplate(category) {
 }
 
 // Replace placeholders in template with actual weather data
-function fillTemplate(template, data) {
+function fillTemplate(template, data, unitGroup = "metric") {
+  const tempUnit = unitGroup === "metric" ? "°C" : "°F";
   return template
+    .replace(/°C/g, tempUnit)
     .replace("{condition}", data.condition.toLowerCase())
     .replace("{min}", data.min)
     .replace("{max}", data.max)
@@ -132,15 +134,15 @@ function fillTemplate(template, data) {
 }
 
 // Create a weather summary for a specific time period
-function buildPeriodSummary(category, data) {
+function buildPeriodSummary(category, data, unitGroup = "metric") {
   if (!data) return "";
 
   // Generate base summary sentence
-  let summary = fillTemplate(pickTemplate(category), data);
+  let summary = fillTemplate(pickTemplate(category), data, unitGroup);
 
   // If precipitation chance is above threshold, add a rain-related sentence
   if (data.precip > PRECIPITATION_THRESHOLD) {
-    const precipSentence = fillTemplate(pickTemplate("precipitation"), data);
+    const precipSentence = fillTemplate(pickTemplate("precipitation"), data, unitGroup);
     summary += " " + precipSentence;
   }
 
@@ -148,15 +150,15 @@ function buildPeriodSummary(category, data) {
 }
 
 // Generate a complete daily weather summary from data for a day
-export default function generateDailySummary(day) {
+export default function generateDailySummary(day, unitGroup = "metric") {
   const { morning, afternoon, evening, night } = getDayData(day);
 
   const summaryParts = [];
 
-  if (morning) summaryParts.push(buildPeriodSummary("morning", morning));
-  if (afternoon) summaryParts.push(buildPeriodSummary("afternoon", afternoon));
-  if (evening) summaryParts.push(buildPeriodSummary("evening", evening));
-  if (night) summaryParts.push(buildPeriodSummary("night", night));
+  if (morning) summaryParts.push(buildPeriodSummary("morning", morning, unitGroup));
+  if (afternoon) summaryParts.push(buildPeriodSummary("afternoon", afternoon, unitGroup));
+  if (evening) summaryParts.push(buildPeriodSummary("evening", evening, unitGroup));
+  if (night) summaryParts.push(buildPeriodSummary("night", night, unitGroup));
 
   // Combine all time period summaries into one narrative
   return summaryParts.join(" ");
