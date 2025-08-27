@@ -45,13 +45,18 @@ function getWeatherIcon(condition) {
 }
 
 function formatDate(dateString) {
-  const date = new Date(dateString);
+  const date = new Date(dateString + 'T00:00:00');
   const today = new Date();
-  const tomorrow = new Date(today);
+  const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
   
-  if (date.toDateString() === today.toDateString()) return "Today";
-  if (date.toDateString() === tomorrow.toDateString()) return "Tomorrow";
+  // Compare just the date parts
+  const dateOnly = date.toDateString();
+  const todayOnly = today.toDateString();
+  const tomorrowOnly = tomorrow.toDateString();
+  
+  if (dateOnly === todayOnly) return "Today";
+  if (dateOnly === tomorrowOnly) return "Tomorrow";
   
   return date.toLocaleDateString('en-US', { weekday: 'long' });
 }
@@ -71,13 +76,27 @@ function getMoonPhaseName(moonPhase) {
   return "Unknown";
 }
 
-function createCurrentWeatherSection(currentDay, location, tempUnit) {
+function formatDateForHeader(dateString) {
+  const date = new Date(dateString + 'T00:00:00');
+  return date.toLocaleDateString('en-GB', { 
+    day: '2-digit', 
+    month: '2-digit', 
+    year: 'numeric' 
+  });
+}
+
+function createCurrentWeatherSection(currentDay, location, tempUnit, isToday = true) {
   const section = document.createElement('section');
   section.className = 'current-temperature-container';
   
   const city = document.createElement('p');
   city.className = 'city';
-  city.textContent = location;
+  
+  if (isToday) {
+    city.textContent = location;
+  } else {
+    city.textContent = `${location} - ${formatDateForHeader(currentDay.date)}`;
+  }
   
   const currentWeather = document.createElement('div');
   currentWeather.className = 'current-weather';
@@ -88,7 +107,14 @@ function createCurrentWeatherSection(currentDay, location, tempUnit) {
   
   const temp = document.createElement('p');
   temp.className = 'current-temperature';
-  temp.textContent = `${Math.round(currentDay.temperature)}${tempUnit}`;
+  
+  if (isToday) {
+    temp.textContent = `${Math.round(currentDay.temperature)}${tempUnit}`;
+  } else {
+    // Show average temperature for non-today days
+    const avgTemp = Math.round((currentDay.tempMax + currentDay.tempMin) / 2);
+    temp.textContent = `${avgTemp}${tempUnit}`;
+  }
   
   const description = document.createElement('p');
   description.className = 'description';
@@ -96,7 +122,12 @@ function createCurrentWeatherSection(currentDay, location, tempUnit) {
   
   const feelsLike = document.createElement('p');
   feelsLike.className = 'feels-like';
-  feelsLike.textContent = `Feels like ${Math.round(currentDay.feelsLike)}${tempUnit}`;
+  
+  if (isToday) {
+    feelsLike.textContent = `Feels like ${Math.round(currentDay.feelsLike)}${tempUnit}`;
+  } else {
+    feelsLike.textContent = `High ${Math.round(currentDay.tempMax)}${tempUnit} / Low ${Math.round(currentDay.tempMin)}${tempUnit}`;
+  }
   
   currentWeather.appendChild(img);
   currentWeather.appendChild(temp);
@@ -108,7 +139,7 @@ function createCurrentWeatherSection(currentDay, location, tempUnit) {
   return section;
 }
 
-function createInfoSection(currentDay) {
+function createInfoSection(currentDay, unitGroup = "metric") {
   const section = document.createElement('section');
   section.className = 'info-container';
   
@@ -144,14 +175,15 @@ function createInfoSection(currentDay) {
   pressure.className = 'pressure';
   pressure.textContent = 'Pressure: ';
   const pressureSpan = document.createElement('span');
-  pressureSpan.textContent = `${currentDay.pressure} mb`;
+  pressureSpan.textContent = `${currentDay.pressure}`;
   pressure.appendChild(pressureSpan);
   
   const visibility = document.createElement('p');
   visibility.className = 'visibility';
   visibility.textContent = 'Visibility: ';
   const visibilitySpan = document.createElement('span');
-  visibilitySpan.textContent = `${currentDay.visibility}km`;
+  const visibilityUnit = unitGroup === "metric" ? "km" : "mi";
+  visibilitySpan.textContent = `${currentDay.visibility}${visibilityUnit}`;
   visibility.appendChild(visibilitySpan);
   
   // Second column
@@ -166,7 +198,8 @@ function createInfoSection(currentDay) {
   windSpeed.className = 'wind-speed';
   windSpeed.textContent = 'Wind-speed: ';
   const windSpeedSpan = document.createElement('span');
-  windSpeedSpan.textContent = `${Math.round(currentDay.windSpeed)}km/h`;
+  const windUnit = unitGroup === "metric" ? "km/h" : "mph";
+  windSpeedSpan.textContent = `${Math.round(currentDay.windSpeed)}${windUnit}`;
   windSpeed.appendChild(windSpeedSpan);
   
   const precipitation = document.createElement('p');
@@ -217,7 +250,19 @@ function createSummarySection(currentDay, location) {
   const locationSpan = document.createElement('span');
   locationSpan.textContent = `${location}'s `;
   summaryHead.appendChild(locationSpan);
-  summaryHead.appendChild(document.createTextNode('Weather Today'));
+  
+  // Generate dynamic header based on date
+  const dayLabel = formatDate(currentDay.date);
+  let headerText;
+  if (dayLabel === 'Today') {
+    headerText = 'Weather Today';
+  } else if (dayLabel === 'Tomorrow') {
+    headerText = 'Weather Tomorrow';
+  } else {
+    headerText = `Weather on ${dayLabel}`;
+  }
+  
+  summaryHead.appendChild(document.createTextNode(headerText));
   
   const summaryText = document.createElement('p');
   summaryText.className = 'summary-text';
@@ -229,7 +274,7 @@ function createSummarySection(currentDay, location) {
   return section;
 }
 
-function createForecastSection(days, tempUnit) {
+function createForecastSection(days, tempUnit, location, currentWeather) {
   const section = document.createElement('section');
   section.className = 'forecast-container';
   
@@ -240,12 +285,13 @@ function createForecastSection(days, tempUnit) {
   const forecastDays = document.createElement('div');
   forecastDays.className = 'forecast-days';
   
-  days.slice(0, 5).forEach(day => {
+  days.slice(0, 5).forEach((day, index) => {
     const forecastDay = document.createElement('div');
     forecastDay.className = 'forecast-day';
+    forecastDay.style.cursor = 'pointer';
     
     const dayInfo = document.createElement('p');
-    dayInfo.textContent = formatDate(day.datetime) + ' ';
+    dayInfo.textContent = formatDate(day.date) + ' ';
     const tempSpan = document.createElement('span');
     tempSpan.textContent = `${Math.round(day.tempMin)}${tempUnit} ---- ${Math.round(day.tempMax)}${tempUnit}`;
     dayInfo.appendChild(tempSpan);
@@ -253,6 +299,12 @@ function createForecastSection(days, tempUnit) {
     const img = document.createElement('img');
     img.src = `/assets/${getWeatherIcon(day.conditions)}`;
     img.alt = day.conditions;
+    
+    // Add click event listener
+    forecastDay.addEventListener('click', () => {
+      const unitGroup = tempUnit === '°C' ? 'metric' : 'us';
+      updateDayView(day, location, tempUnit, currentWeather, unitGroup);
+    });
     
     forecastDay.appendChild(dayInfo);
     forecastDay.appendChild(img);
@@ -265,6 +317,34 @@ function createForecastSection(days, tempUnit) {
   return section;
 }
 
+export function updateDayView(selectedDay, location, tempUnit, currentWeather, unitGroup = "metric") {
+  const currentWeatherSection = document.querySelector('.current-temperature-container');
+  const infoSection = document.querySelector('.info-container');
+  const summarySection = document.querySelector('.summary-container');
+  
+  // Check if it's today
+  const isToday = formatDate(selectedDay.date) === 'Today';
+  
+  // Replace current weather section
+  if (isToday) {
+    // Restore original current weather for today
+    const newCurrentWeatherSection = createCurrentWeatherSection(currentWeather, location, tempUnit, true);
+    currentWeatherSection.replaceWith(newCurrentWeatherSection);
+  } else {
+    // Show daily average for other days
+    const newCurrentWeatherSection = createCurrentWeatherSection(selectedDay, location, tempUnit, false);
+    currentWeatherSection.replaceWith(newCurrentWeatherSection);
+  }
+  
+  // Replace info section
+  const newInfoSection = createInfoSection(selectedDay, unitGroup);
+  infoSection.replaceWith(newInfoSection);
+  
+  // Replace summary section
+  const newSummarySection = createSummarySection(selectedDay, location);
+  summarySection.replaceWith(newSummarySection);
+}
+
 export default function renderWeather(currentWeather, fiveDaysWeather, unitGroup = "metric", location) {
   const main = document.querySelector('.main');
   const currentDay = fiveDaysWeather[0];
@@ -275,7 +355,7 @@ export default function renderWeather(currentWeather, fiveDaysWeather, unitGroup
   
   // Create and append sections
   main.appendChild(createCurrentWeatherSection(currentWeather, location, tempUnit));
-  main.appendChild(createInfoSection(currentDay));
+  main.appendChild(createInfoSection(currentDay, unitGroup));
   main.appendChild(createSummarySection(currentDay, location));
-  main.appendChild(createForecastSection(fiveDaysWeather, tempUnit));
-}
+  main.appendChild(createForecastSection(fiveDaysWeather, tempUnit, location, currentWeather));
+} 

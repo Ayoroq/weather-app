@@ -6,11 +6,11 @@ import { fetchCities } from "./geo-location.js";
 import { renderSearchResults } from "./render-weather.js";
 import renderWeather from "./render-weather.js";
 
-// const data = await getWeatherData();
-// const location = await fetchGeoLocation();
-// console.log(location);
-// const day = data[0];
-// console.log(day);
+let city;
+let currentLat;
+let currentLon;
+let currentWeatherData;
+let currentFiveDaysData;
 
 const main = document.querySelector(".main");
 const search = document.querySelector(".search-input");
@@ -56,6 +56,20 @@ searchDropDown.addEventListener("click", async (e) => {
   }
 });
 
+//event listener for when the user changes the unit from Celsius to Fahrenheit or vice versa
+const unitToggle = document.querySelectorAll('input[name="unit"]')
+unitToggle.forEach((unit) => {
+  unit.addEventListener("change", async (e) => {
+    const selectedUnit = e.target.value === 'C' ? 'metric' : 'us';
+    const { currentWeather, fiveDaysWeather } = await getWeatherData(
+      currentLat,
+      currentLon,
+      selectedUnit
+    );
+    renderWeather(currentWeather, fiveDaysWeather, selectedUnit, city);
+  });
+});
+
 // if the user clicks anywhere outside the dropdown, clear the dropdown
 document.addEventListener("click", (e) => {
   if (!searchDropDown.contains(e.target) && !search.contains(e.target)) {
@@ -65,13 +79,13 @@ document.addEventListener("click", (e) => {
 
 async function initialState() {
   const location = await fetchGeoLocation();
-  const lat = location.latitude;
-  const lon = location.longitude;
-  const city = location.city;
+  currentLat = location.latitude;
+  currentLon = location.longitude;
+  city = location.city;
 
-  const { currentWeather, fiveDaysWeather } = await getWeatherData(lat, lon);
-  renderWeather(currentWeather,fiveDaysWeather, "metric", city);
-  console.log(lat,lon)
+  const { currentWeather, fiveDaysWeather } = await getWeatherData(currentLat, currentLon);
+  renderWeather(currentWeather, fiveDaysWeather, "metric", city);
+  console.log(currentLat, currentLon);
 }
 
 initialState();
