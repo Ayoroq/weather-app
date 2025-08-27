@@ -4,6 +4,9 @@
 
 body {
   background-color: var(--main-colour);
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .container {
@@ -11,7 +14,7 @@ body {
   max-width: 1000px;
   display: flex;
   flex-direction: column;
-  gap: 2rem;;
+  gap: 2rem;
   margin: 2rem auto;
 }
 
@@ -71,49 +74,63 @@ a {
   cursor: pointer;
 }
 
-.search-result-item:hover{
-    background-color: cornflowerblue;
+.search-result-item:hover {
+  background-color: cornflowerblue;
 }
 
 .switch {
   margin-left: auto;
 }
 
-
-.main{
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.current-temperature-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* This is for the first section */
+.current-temperature-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .current-temperature-container > p {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
-.city{
-    font-size: 3rem;
+.city {
+  font-size: 3rem;
 }
 
-.current-weather{
-    display: flex;
-    gap: 2rem;
-    align-items: center;
+.current-weather {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
 }
 
-.current-weather img{
-    width: 8rem;
+.current-weather img {
+  width: 8rem;
 }
 
-.current-temperature{
-    font-size: 6rem;
+.current-temperature {
+  font-size: 6rem;
 }
 
-.description{
-    font-size: 1.25rem;
+.description {
+  font-size: 1.25rem;
+}
+
+/* This is for the second section */
+.info-container {
+  display: flex;
+  justify-content: space-around;
+  gap: 2rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
 }
