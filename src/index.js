@@ -16,6 +16,16 @@ const main = document.querySelector(".main");
 const search = document.querySelector(".search-input");
 const searchDropDown = document.querySelector(".search-dropdown");
 
+// Helper function to fetch and render weather data
+async function fetchAndRenderWeather(lat, lon, unitGroup, location) {
+  const { currentWeather, fiveDaysWeather } = await getWeatherData(
+    lat,
+    lon,
+    unitGroup
+  );
+  renderWeather(currentWeather, fiveDaysWeather, unitGroup, location);
+}
+
 
 function debounce(func, delay) {
   let timer; // Stores the timeout ID
@@ -57,12 +67,7 @@ searchDropDown.addEventListener("click", async (e) => {
     const selectedUnit = document.querySelector('input[name="unit"]:checked');
     const unitGroup = selectedUnit.value === "C" ? "metric" : "us";
     
-    const { currentWeather, fiveDaysWeather } = await getWeatherData(
-      currentLat,
-      currentLon,
-      unitGroup
-    );
-    renderWeather(currentWeather, fiveDaysWeather, unitGroup, city);
+    await fetchAndRenderWeather(currentLat, currentLon, unitGroup, city);
   }
 });
 
@@ -71,12 +76,7 @@ const unitToggle = document.querySelectorAll('input[name="unit"]');
 unitToggle.forEach((unit) => {
   unit.addEventListener("change", async (e) => {
     const selectedUnit = e.target.value === "C" ? "metric" : "us";
-    const { currentWeather, fiveDaysWeather } = await getWeatherData(
-      currentLat,
-      currentLon,
-      selectedUnit
-    );
-    renderWeather(currentWeather, fiveDaysWeather, selectedUnit, city);
+    await fetchAndRenderWeather(currentLat, currentLon, selectedUnit, city);
   });
 });
 
@@ -93,11 +93,7 @@ async function initialState() {
   currentLon = location.longitude;
   city = location.city;
 
-  const { currentWeather, fiveDaysWeather } = await getWeatherData(
-    currentLat,
-    currentLon
-  );
-  renderWeather(currentWeather, fiveDaysWeather, "metric", city);
+  await fetchAndRenderWeather(currentLat, currentLon, "metric", city);
 }
 
 initialState();

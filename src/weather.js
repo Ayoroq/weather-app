@@ -106,8 +106,3 @@ export default async function getWeatherData(
     throw error;
   }
 }   
-
-const data = await fetchWeatherData();
-const { currentConditions, fiveDays } = getFirstFiveDaysWeatherData(data);
-console.log(currentConditions, fiveDays)
-//
