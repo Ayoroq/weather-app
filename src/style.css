@@ -9,6 +9,9 @@ body {
 .container {
   min-height: 100vh;
   max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;;
   margin: 2rem auto;
 }
 
@@ -74,4 +77,43 @@ a {
 
 .switch {
   margin-left: auto;
+}
+
+
+.main{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.current-temperature-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.current-temperature-container > p {
+    text-transform: uppercase;
+}
+
+.city{
+    font-size: 3rem;
+}
+
+.current-weather{
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.current-weather img{
+    width: 8rem;
+}
+
+.current-temperature{
+    font-size: 6rem;
+}
+
+.description{
+    font-size: 1.25rem;
 }
