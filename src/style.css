@@ -234,7 +234,6 @@ a {
   color: #666;
 }
 
-
 /* This is for the 4th section. The forecast */
 .forecast-container {
   display: flex;
@@ -259,10 +258,15 @@ a {
   gap: 0.5rem;
   cursor: pointer;
   border-radius: 0.25rem;
+  transition: transform 0.2s ease-in-out;
 }
 
 .forecast-day:hover {
   background: rgba(0, 0, 0, 0.05);
+}
+
+.forecast-day:active {
+  transform: scale(0.96);
 }
 
 .forecast-day p {

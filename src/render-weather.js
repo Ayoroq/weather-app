@@ -220,7 +220,7 @@ function createInfoSection(currentDay, unitGroup = "metric") {
   pressure.className = 'pressure';
   pressure.textContent = 'Pressure: ';
   const pressureSpan = document.createElement('span');
-  pressureSpan.textContent = `${currentDay.pressure}`;
+  pressureSpan.textContent = `${currentDay.pressure} mb`;
   pressure.appendChild(pressureSpan);
   
   const visibility = document.createElement('p');
