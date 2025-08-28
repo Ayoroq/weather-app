@@ -419,4 +419,17 @@ a {
   .hour-precip {
     font-size: 0.625rem;
   }
+
+  /* Show hourly by default on mobile, hide summary */
+  .hourly-container {
+    display: block !important;
+  }
+  
+  .summary-container {
+    display: none !important;
+  }
+  
+  .hourly-toggle {
+    display: none; /* Hide toggle button on mobile */
+  }
 }
