@@ -272,6 +272,52 @@ function createInfoSection(currentDay, unitGroup = "metric") {
   return section;
 }
 
+function createHourlySection(hours, tempUnit) {
+  const section = document.createElement('section');
+  section.className = 'hourly-container';
+  section.style.display = 'none';
+  
+  const hourlyHead = document.createElement('p');
+  hourlyHead.className = 'hourly-head';
+  hourlyHead.textContent = 'Hourly Forecast';
+  
+  const hourlyScroll = document.createElement('div');
+  hourlyScroll.className = 'hourly-scroll';
+  
+  hours.forEach(hour => {
+    const hourCard = document.createElement('div');
+    hourCard.className = 'hour-card';
+    
+    const time = document.createElement('p');
+    time.className = 'hour-time';
+    time.textContent = hour.datetime.slice(0, 5);
+    
+    const img = document.createElement('img');
+    img.src = getWeatherIcon(hour.conditions);
+    img.alt = hour.conditions;
+    img.className = 'hour-icon';
+    
+    const temp = document.createElement('p');
+    temp.className = 'hour-temp';
+    temp.textContent = `${Math.round(hour.temp)}${tempUnit}`;
+    
+    const precip = document.createElement('p');
+    precip.className = 'hour-precip';
+    precip.textContent = `${hour.precipprob}%`;
+    
+    hourCard.appendChild(time);
+    hourCard.appendChild(img);
+    hourCard.appendChild(temp);
+    hourCard.appendChild(precip);
+    hourlyScroll.appendChild(hourCard);
+  });
+  
+  section.appendChild(hourlyHead);
+  section.appendChild(hourlyScroll);
+  
+  return section;
+}
+
 function createSummarySection(currentDay, location, unitGroup = "metric") {
   const section = document.createElement('section');
   section.className = 'summary-container';
@@ -299,8 +345,23 @@ function createSummarySection(currentDay, location, unitGroup = "metric") {
   summaryText.className = 'summary-text';
   summaryText.textContent = generateDailySummary(currentDay, unitGroup);
   
+  const hourlyToggle = document.createElement('button');
+  hourlyToggle.className = 'hourly-toggle';
+  hourlyToggle.textContent = 'Show Hourly';
+  hourlyToggle.addEventListener('click', () => {
+    const hourlySection = document.querySelector('.hourly-container');
+    if (hourlySection.style.display === 'none') {
+      hourlySection.style.display = 'block';
+      hourlyToggle.textContent = 'Hide Hourly';
+    } else {
+      hourlySection.style.display = 'none';
+      hourlyToggle.textContent = 'Show Hourly';
+    }
+  });
+  
   section.appendChild(summaryHead);
   section.appendChild(summaryText);
+  section.appendChild(hourlyToggle);
   
   return section;
 }
@@ -356,6 +417,7 @@ export function updateDayView(selectedDay, location, tempUnit, currentWeather, u
   const currentWeatherSection = document.querySelector('.current-temperature-container');
   const infoSection = document.querySelector('.info-container');
   const summarySection = document.querySelector('.summary-container');
+  const hourlySection = document.querySelector('.hourly-container');
   
   // Check if it's today
   const isToday = formatDate(selectedDay.date) === 'Today';
@@ -378,6 +440,10 @@ export function updateDayView(selectedDay, location, tempUnit, currentWeather, u
   // Replace summary section
   const newSummarySection = createSummarySection(selectedDay, location, unitGroup);
   summarySection.replaceWith(newSummarySection);
+  
+  // Replace hourly section
+  const newHourlySection = createHourlySection(selectedDay.hours, tempUnit);
+  hourlySection.replaceWith(newHourlySection);
 }
 
 export default function renderWeather(currentWeather, fiveDaysWeather, unitGroup = "metric", location) {
@@ -392,5 +458,6 @@ export default function renderWeather(currentWeather, fiveDaysWeather, unitGroup
   main.appendChild(createCurrentWeatherSection(currentWeather, location, tempUnit));
   main.appendChild(createInfoSection(currentDay, unitGroup));
   main.appendChild(createSummarySection(currentDay, location, unitGroup));
+  main.appendChild(createHourlySection(currentDay.hours, tempUnit));
   main.appendChild(createForecastSection(fiveDaysWeather, tempUnit, location, currentWeather));
 } 
