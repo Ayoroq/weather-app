@@ -32,7 +32,7 @@ body {
 .logo {
   font-size: 3rem;
   align-self: end;
-  font-family: "JetBrains Mono";
+  font-family: "JetBrains Mono", "Roboto Mono", "Consolas", monospace;
 }
 
 a {

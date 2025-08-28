@@ -24,25 +24,27 @@
         <div class="logo">
           <a href="./index.html">Oj&uacute; &#7885;j&#7885;&#769;</a>
         </div>
-        <nav class="nav">
+        <nav class="nav" aria-label="Weather app navigation">
           <div class="search-container">
             <input
               id="search-input"
               type="search"
               placeholder="Search"
               class="search-input"
+              aria-label="Search for cities"
+              autocomplete="off"
             />
-            <div class="search-dropdown glassy"></div>
+            <div class="search-dropdown glassy" role="listbox" aria-label="City search results"></div>
           </div>
-          <div class="switch">
-            <input type="radio" name="unit" id="unit-c" value="C" checked />
+          <div class="switch" role="group" aria-label="Temperature unit selection">
+            <input type="radio" name="unit" id="unit-c" value="C" checked aria-label="Celsius temperature unit" />
             <label for="unit-c">°C</label>
-            <input type="radio" name="unit" id="unit-f" value="F" />
+            <input type="radio" name="unit" id="unit-f" value="F" aria-label="Fahrenheit temperature unit" />
             <label for="unit-f">°F</label>
           </div>
         </nav>
       </header>
-      <main class="main"></main>
+      <main class="main" aria-label="Weather information"></main>
       <footer class="footer"></footer>
     </div>
   </body>

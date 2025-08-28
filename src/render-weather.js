@@ -37,11 +37,9 @@ export function renderSearchResults(cities) {
     cities.forEach((city) => {
       const cityElement = document.createElement("button");
       cityElement.classList.add("search-result-item");
-      if (city.state) {
-        cityElement.textContent = `${city.name}, ${city.state}, ${city.country}`;
-      } else {
-        cityElement.textContent = `${city.name}, ${city.country}`;
-      }
+      const cityText = city.state ? `${city.name}, ${city.state}, ${city.country}` : `${city.name}, ${city.country}`;
+      cityElement.textContent = cityText;
+      cityElement.setAttribute('aria-label', `Select ${cityText} for weather forecast`);
       cityElement.dataset.lat = city.lat;
       cityElement.dataset.lon = city.lon;
       cityElement.dataset.name = city.name;
@@ -362,14 +360,17 @@ function createSummarySection(currentDay, location, unitGroup = "metric") {
   const hourlyToggle = document.createElement('button');
   hourlyToggle.className = 'hourly-toggle';
   hourlyToggle.textContent = 'Show Hourly';
+  hourlyToggle.setAttribute('aria-label', 'Toggle hourly weather forecast');
   hourlyToggle.addEventListener('click', () => {
     const hourlySection = document.querySelector('.hourly-container');
     if (hourlySection.style.display === 'none') {
       hourlySection.style.display = 'block';
       hourlyToggle.textContent = 'Hide Hourly';
+      hourlyToggle.setAttribute('aria-label', 'Hide hourly weather forecast');
     } else {
       hourlySection.style.display = 'none';
       hourlyToggle.textContent = 'Show Hourly';
+      hourlyToggle.setAttribute('aria-label', 'Show hourly weather forecast');
     }
   });
   
@@ -410,10 +411,23 @@ function createForecastSection(days, tempUnit, location, currentWeather) {
       img.style.display = 'none';
     };
     
-    // Add click event listener
+    // Add accessibility and click event listener
+    forecastDay.setAttribute('role', 'button');
+    forecastDay.setAttribute('tabindex', '0');
+    forecastDay.setAttribute('aria-label', `View detailed weather for ${formatDate(day.date)}`);
+    
     forecastDay.addEventListener('click', () => {
       const unitGroup = tempUnit === '°C' ? 'metric' : 'us';
       updateDayView(day, location, tempUnit, currentWeather, unitGroup);
+    });
+    
+    // Add keyboard support
+    forecastDay.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const unitGroup = tempUnit === '°C' ? 'metric' : 'us';
+        updateDayView(day, location, tempUnit, currentWeather, unitGroup);
+      }
     });
     
     forecastDay.appendChild(dayInfo);
