@@ -129,7 +129,7 @@ function createCurrentWeatherSection(currentDay, location, tempUnit, isToday = t
   currentWeather.className = 'current-weather';
   
   const img = document.createElement('img');
-  img.src = getWeatherIcon(currentDay.conditions);
+  img.src = getWeatherIcon(currentDay.icon);
   img.alt = currentDay.conditions;
   img.onerror = () => {
     console.warn(`Failed to load image: ${img.src}`);
@@ -293,7 +293,7 @@ function createHourlySection(hours, tempUnit) {
     time.textContent = hour.datetime.slice(0, 5);
     
     const img = document.createElement('img');
-    img.src = getWeatherIcon(hour.conditions);
+    img.src = getWeatherIcon(hour.icon);
     img.alt = hour.conditions;
     img.className = 'hour-icon';
     
@@ -389,7 +389,7 @@ function createForecastSection(days, tempUnit, location, currentWeather) {
     dayInfo.appendChild(tempSpan);
     
     const img = document.createElement('img');
-    img.src = getWeatherIcon(day.conditions);
+    img.src = getWeatherIcon(day.icon);
     img.alt = day.conditions;
     img.onerror = () => {
       console.warn(`Failed to load forecast image: ${img.src}`);
