@@ -136,7 +136,7 @@ a {
 /* This is for the second section */
 .info-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   gap: 2rem;
 }
 
@@ -145,6 +145,14 @@ a {
   flex-direction: column;
   gap: 0.5rem;
   text-align: left;
+}
+
+.info:nth-child(1) {
+  margin-left: 6rem;
+}
+
+.info:nth-child(2) {
+  margin-left: 8rem;
 }
 
 /* This is for the 3rd section. The summary */
