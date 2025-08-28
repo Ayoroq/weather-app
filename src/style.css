@@ -224,6 +224,16 @@ a {
   color: #666;
 }
 
+/* Loading state */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 3rem;
+  color: #666;
+}
+
 
 /* This is for the 4th section. The forecast */
 .forecast-container {

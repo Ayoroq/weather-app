@@ -16,6 +16,11 @@ import sunnySvg from '../assets/sunny.svg';
 import thunderstormSvg from '../assets/thunderstorm.svg';
 import windSvg from '../assets/wind.svg';
 
+export function showLoading() {
+  const main = document.querySelector('.main');
+  main.innerHTML = '<div class="loading">Loading weather data...</div>';
+}
+
 export function renderSearchResults(cities) {
   const searchDropDown = document.querySelector(".search-dropdown");
   searchDropDown.innerHTML = ""; // Clear previous results

@@ -3,7 +3,7 @@ import "./style.css";
 import getWeatherData from "./weather.js";
 import fetchGeoLocation from "./geo-location.js";
 import { fetchCities } from "./geo-location.js";
-import { renderSearchResults } from "./render-weather.js";
+import { renderSearchResults, showLoading } from "./render-weather.js";
 import renderWeather from "./render-weather.js";
 
 // Constants
@@ -19,6 +19,7 @@ const searchDropDown = document.querySelector(".search-dropdown");
 // Helper function to fetch and render weather data
 async function fetchAndRenderWeather(lat, lon, unitGroup, location) {
   try {
+    showLoading();
     const { currentWeather, fiveDaysWeather } = await getWeatherData(
       lat,
       lon,
