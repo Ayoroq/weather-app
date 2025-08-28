@@ -19,7 +19,6 @@ export default async function fetchGeoLocation() {
   }
 }
 
-
 // function to get location based on the user's typed input
 export async function fetchCities(city) {
   const url = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${openWeatherKey}`;
@@ -32,7 +31,7 @@ export async function fetchCities(city) {
     return data.map((location) => ({
       name: location.name,
       state: location.state,
-      country: location.country, 
+      country: location.country,
       lat: location.lat,
       lon: location.lon,
     }));

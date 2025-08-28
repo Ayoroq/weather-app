@@ -9,46 +9,43 @@ import renderWeather from "./render-weather.js";
 let city;
 let currentLat;
 let currentLon;
-let currentWeatherData;
-let currentFiveDaysData;
-
-const main = document.querySelector(".main");
 const search = document.querySelector(".search-input");
 const searchDropDown = document.querySelector(".search-dropdown");
 
 // Helper function to fetch and render weather data
 async function fetchAndRenderWeather(lat, lon, unitGroup, location) {
-  const { currentWeather, fiveDaysWeather } = await getWeatherData(
-    lat,
-    lon,
-    unitGroup
-  );
-  renderWeather(currentWeather, fiveDaysWeather, unitGroup, location);
+  try {
+    const { currentWeather, fiveDaysWeather } = await getWeatherData(
+      lat,
+      lon,
+      unitGroup
+    );
+    renderWeather(currentWeather, fiveDaysWeather, unitGroup, location);
+  } catch (error) {
+    console.error("Failed to fetch weather data:", error);
+  }
 }
 
 
 function debounce(func, delay) {
-  let timer; // Stores the timeout ID
-
-  return function (...args) {
-    // Returns a new function
-    const context = this; // Preserves the 'this' context
-
-    clearTimeout(timer); // Clears any existing timer
-    timer = setTimeout(() => {
-      // Sets a new timer
-      func.apply(context, args); // Executes the original function after the delay
-    }, delay);
+  let timer;
+  return function() {
+    clearTimeout(timer);
+    timer = setTimeout(func, delay);
   };
 }
 
 async function searchForCities() {
-  const query = search.value.trim();
-  if (query.length === 0) {
-    return;
+  try {
+    const query = search.value.trim();
+    if (query.length === 0) {
+      return;
+    }
+    const cities = await fetchCities(query);
+    renderSearchResults(cities);
+  } catch (error) {
+    console.error("Search failed:", error);
   }
-  const cities = await fetchCities(query);
-  renderSearchResults(cities);
 }
 
 // rendering search result after typing
@@ -58,16 +55,20 @@ search.addEventListener("input", debouncedSearch);
 //what happens when you click on a search result
 searchDropDown.addEventListener("click", async (e) => {
   if (e.target.classList.contains("search-result-item")) {
-    //clear the dropdown
-    searchDropDown.innerHTML = "";
-    currentLat = e.target.dataset.lat;
-    currentLon = e.target.dataset.lon;
-    city = e.target.dataset.name; 
+    try {
+      //clear the dropdown
+      searchDropDown.innerHTML = "";
+      currentLat = e.target.dataset.lat;
+      currentLon = e.target.dataset.lon;
+      city = e.target.dataset.name; 
 
-    const selectedUnit = document.querySelector('input[name="unit"]:checked');
-    const unitGroup = selectedUnit.value === "C" ? "metric" : "us";
-    
-    await fetchAndRenderWeather(currentLat, currentLon, unitGroup, city);
+      const selectedUnit = document.querySelector('input[name="unit"]:checked');
+      const unitGroup = selectedUnit.value === "C" ? "metric" : "us";
+      
+      await fetchAndRenderWeather(currentLat, currentLon, unitGroup, city);
+    } catch (error) {
+      console.error("Failed to load selected city:", error);
+    }
   }
 });
 
@@ -75,8 +76,12 @@ searchDropDown.addEventListener("click", async (e) => {
 const unitToggle = document.querySelectorAll('input[name="unit"]');
 unitToggle.forEach((unit) => {
   unit.addEventListener("change", async (e) => {
-    const selectedUnit = e.target.value === "C" ? "metric" : "us";
-    await fetchAndRenderWeather(currentLat, currentLon, selectedUnit, city);
+    try {
+      const selectedUnit = e.target.value === "C" ? "metric" : "us";
+      await fetchAndRenderWeather(currentLat, currentLon, selectedUnit, city);
+    } catch (error) {
+      console.error("Failed to change units:", error);
+    }
   });
 });
 
@@ -88,12 +93,16 @@ document.addEventListener("click", (e) => {
 });
 
 async function initialState() {
-  const location = await fetchGeoLocation();
-  currentLat = location.latitude;
-  currentLon = location.longitude;
-  city = location.city;
+  try {
+    const location = await fetchGeoLocation();
+    currentLat = location.latitude;
+    currentLon = location.longitude;
+    city = location.city;
 
-  await fetchAndRenderWeather(currentLat, currentLon, "metric", city);
+    await fetchAndRenderWeather(currentLat, currentLon, "metric", city);
+  } catch (error) {
+    console.error("Failed to initialize app:", error);
+  }
 }
 
 initialState();
