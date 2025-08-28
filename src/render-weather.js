@@ -5,11 +5,16 @@ import { fetchCities } from "./geo-location.js";
 
 // Import SVG assets
 import cloudSvg from '../assets/cloud.svg';
+import fogSvg from '../assets/fog.svg';
 import lightRainSvg from '../assets/light-rain.svg';
 import partialCloudSvg from '../assets/partial-cloud.svg';
+import partialCloudDaySvg from '../assets/partial-cloud-day.svg';
+import partialCloudNightSvg from '../assets/partial-cloud-night.svg';
 import rainSvg from '../assets/rain.svg';
+import snowSvg from '../assets/snow.svg';
 import sunnySvg from '../assets/sunny.svg';
 import thunderstormSvg from '../assets/thunderstorm.svg';
+import windSvg from '../assets/wind.svg';
 
 export function renderSearchResults(cities) {
   const searchDropDown = document.querySelector(".search-dropdown");
@@ -35,20 +40,20 @@ export function renderSearchResults(cities) {
 
 // Map weather conditions to imported SVG assets
 const weatherIcons = {
-  "snow": cloudSvg, // Using cloud as fallback for snow
-  "snow-showers-day": cloudSvg,
-  "snow-showers-night": cloudSvg,
+  "snow": snowSvg,
+  "snow-showers-day": snowSvg,
+  "snow-showers-night": snowSvg,
   "thunder-rain": thunderstormSvg,
   "thunder-showers-day": thunderstormSvg,
   "thunder-showers-night": thunderstormSvg,
   "rain": rainSvg,
   "showers-day": lightRainSvg,
   "showers-night": lightRainSvg,
-  "fog": cloudSvg,
-  "wind": cloudSvg,
+  "fog": fogSvg,
+  "wind": windSvg,
   "cloudy": cloudSvg,
-  "partly-cloudy-day": partialCloudSvg,
-  "partly-cloudy-night": partialCloudSvg,
+  "partly-cloudy-day": partialCloudDaySvg,
+  "partly-cloudy-night": partialCloudNightSvg,
   "clear-day": sunnySvg,
   "clear-night": sunnySvg,
   // Legacy mappings for backward compatibility
