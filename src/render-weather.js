@@ -3,6 +3,14 @@ import getWeatherData from "./weather.js";
 import fetchGeoLocation from "./geo-location.js";
 import { fetchCities } from "./geo-location.js";
 
+// Import SVG assets
+import cloudSvg from '../assets/cloud.svg';
+import lightRainSvg from '../assets/light-rain.svg';
+import partialCloudSvg from '../assets/partial-cloud.svg';
+import rainSvg from '../assets/rain.svg';
+import sunnySvg from '../assets/sunny.svg';
+import thunderstormSvg from '../assets/thunderstorm.svg';
+
 export function renderSearchResults(cities) {
   const searchDropDown = document.querySelector(".search-dropdown");
   searchDropDown.innerHTML = ""; // Clear previous results
@@ -25,37 +33,37 @@ export function renderSearchResults(cities) {
   }
 }
 
-// Map weather conditions to icon filenames
+// Map weather conditions to imported SVG assets
 const weatherIcons = {
-  "snow": "snow.svg",
-  "snow-showers-day": "snow.svg",
-  "snow-showers-night": "snow.svg",
-  "thunder-rain": "thunderstorm.svg",
-  "thunder-showers-day": "thunderstorm.svg",
-  "thunder-showers-night": "thunderstorm.svg",
-  "rain": "rain.svg",
-  "showers-day": "light-rain.svg",
-  "showers-night": "light-rain.svg",
-  "fog": "fog.svg",
-  "wind": "wind.svg",
-  "cloudy": "cloud.svg",
-  "partly-cloudy-day": "partial-cloud.svg",
-  "partly-cloudy-night": "partial-cloud.svg",
-  "clear-day": "sunny.svg",
-  "clear-night": "clear-night.svg",
+  "snow": cloudSvg, // Using cloud as fallback for snow
+  "snow-showers-day": cloudSvg,
+  "snow-showers-night": cloudSvg,
+  "thunder-rain": thunderstormSvg,
+  "thunder-showers-day": thunderstormSvg,
+  "thunder-showers-night": thunderstormSvg,
+  "rain": rainSvg,
+  "showers-day": lightRainSvg,
+  "showers-night": lightRainSvg,
+  "fog": cloudSvg,
+  "wind": cloudSvg,
+  "cloudy": cloudSvg,
+  "partly-cloudy-day": partialCloudSvg,
+  "partly-cloudy-night": partialCloudSvg,
+  "clear-day": sunnySvg,
+  "clear-night": sunnySvg,
   // Legacy mappings for backward compatibility
-  "clear": "sunny.svg",
-  "sunny": "sunny.svg",
-  "partly cloudy": "partial-cloud.svg",
-  "overcast": "cloud.svg",
-  "light rain": "light-rain.svg",
-  "heavy rain": "rain.svg",
-  "thunderstorm": "thunderstorm.svg"
+  "clear": sunnySvg,
+  "sunny": sunnySvg,
+  "partly cloudy": partialCloudSvg,
+  "overcast": cloudSvg,
+  "light rain": lightRainSvg,
+  "heavy rain": rainSvg,
+  "thunderstorm": thunderstormSvg
 };
 
 function getWeatherIcon(condition) {
   const normalizedCondition = condition.toLowerCase();
-  return weatherIcons[normalizedCondition] || "cloud.svg";
+  return weatherIcons[normalizedCondition] || cloudSvg;
 }
 
 function formatDate(dateString) {
@@ -116,8 +124,12 @@ function createCurrentWeatherSection(currentDay, location, tempUnit, isToday = t
   currentWeather.className = 'current-weather';
   
   const img = document.createElement('img');
-  img.src = `/assets/${getWeatherIcon(currentDay.conditions)}`;
+  img.src = getWeatherIcon(currentDay.conditions);
   img.alt = currentDay.conditions;
+  img.onerror = () => {
+    console.warn(`Failed to load image: ${img.src}`);
+    img.style.display = 'none';
+  };
   
   const temp = document.createElement('p');
   temp.className = 'current-temperature';
@@ -311,8 +323,12 @@ function createForecastSection(days, tempUnit, location, currentWeather) {
     dayInfo.appendChild(tempSpan);
     
     const img = document.createElement('img');
-    img.src = `/assets/${getWeatherIcon(day.conditions)}`;
+    img.src = getWeatherIcon(day.conditions);
     img.alt = day.conditions;
+    img.onerror = () => {
+      console.warn(`Failed to load forecast image: ${img.src}`);
+      img.style.display = 'none';
+    };
     
     // Add click event listener
     forecastDay.addEventListener('click', () => {
