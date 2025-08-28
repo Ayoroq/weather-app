@@ -136,7 +136,7 @@ a {
 /* This is for the second section */
 .info-container {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   gap: 2rem;
 }
 
@@ -148,11 +148,11 @@ a {
 }
 
 .info:nth-child(1) {
-  margin-left: 6rem;
+  margin-left: 4rem;
 }
 
 .info:nth-child(2) {
-  margin-left: 8rem;
+  margin-left: 2rem;
 }
 
 /* This is for the 3rd section. The summary */
