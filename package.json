@@ -1,16 +1,35 @@
 {
   "name": "weather-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Modern, responsive weather application with 5-day forecast, hourly data, and smart city search built with vanilla JavaScript",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --open --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+    "dev": "npm run start"
   },
-  "keywords": [],
+  "keywords": [
+    "weather",
+    "javascript",
+    "webpack",
+    "api",
+    "forecast",
+    "responsive",
+    "vanilla-js",
+    "weather-app",
+    "geolocation"
+  ],
   "author": "Roqeeb Olaniyi <Ayoroq@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ayoroq/weather-app.git"
+  },
+  "homepage": "https://ayoroq.github.io/weather-app",
+  "bugs": {
+    "url": "https://github.com/Ayoroq/weather-app/issues"
+  },
   "devDependencies": {
     "css-loader": "^7.1.2",
     "html-loader": "^5.1.0",
