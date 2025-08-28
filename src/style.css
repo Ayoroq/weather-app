@@ -284,3 +284,139 @@ a {
   align-items: center;
   gap: 0.5rem;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    margin: 1rem auto;
+    gap: 1.5rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 2rem;
+    align-self: center;
+  }
+
+  .nav {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .search-input {
+    width: 280px;
+  }
+
+  .city {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .current-weather {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .current-weather img {
+    width: 6rem;
+  }
+
+  .current-temperature {
+    font-size: 4rem;
+  }
+
+  .info-container {
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .info:nth-child(1),
+  .info:nth-child(2) {
+    margin-left: 0;
+    flex: 1;
+  }
+
+  .info {
+    font-size: 0.875rem;
+  }
+
+  .forecast-days {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .forecast-day {
+    min-width: 120px;
+  }
+
+  .hourly-scroll {
+    gap: 0.5rem;
+  }
+
+  .hour-card {
+    min-width: 50px;
+    padding: 0.25rem;
+  }
+
+  .loading {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 98%;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+  }
+
+  .search-input {
+    width: 250px;
+  }
+
+  .city {
+    font-size: 1.5rem;
+  }
+
+  .current-temperature {
+    font-size: 3rem;
+  }
+
+  .current-weather img {
+    width: 4rem;
+  }
+
+  .forecast-days {
+    gap: 0.5rem;
+  }
+
+  .forecast-day {
+    min-width: 100px;
+    font-size: 0.875rem;
+  }
+
+  .hour-card {
+    min-width: 45px;
+  }
+
+  .hour-time,
+  .hour-temp {
+    font-size: 0.75rem;
+  }
+
+  .hour-precip {
+    font-size: 0.625rem;
+  }
+}
