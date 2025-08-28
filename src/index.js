@@ -38,7 +38,8 @@ function debounce(func, delay) {
 async function searchForCities() {
   try {
     const query = search.value.trim();
-    if (query.length === 0) {
+    if (query.length < 2) {
+      searchDropDown.innerHTML = "";
       return;
     }
     const cities = await fetchCities(query);
@@ -52,12 +53,36 @@ async function searchForCities() {
 const debouncedSearch = debounce(searchForCities, 300);
 search.addEventListener("input", debouncedSearch);
 
+// keyboard navigation for search
+search.addEventListener("keydown", async (e) => {
+  if (e.key === "Enter") {
+    const firstResult = searchDropDown.querySelector(".search-result-item");
+    if (firstResult) {
+      try {
+        searchDropDown.innerHTML = "";
+        search.value = "";
+        currentLat = firstResult.dataset.lat;
+        currentLon = firstResult.dataset.lon;
+        city = firstResult.dataset.name;
+        
+        const selectedUnit = document.querySelector('input[name="unit"]:checked');
+        const unitGroup = selectedUnit.value === "C" ? "metric" : "us";
+        
+        await fetchAndRenderWeather(currentLat, currentLon, unitGroup, city);
+      } catch (error) {
+        console.error("Failed to load selected city:", error);
+      }
+    }
+  }
+});
+
 //what happens when you click on a search result
 searchDropDown.addEventListener("click", async (e) => {
   if (e.target.classList.contains("search-result-item")) {
     try {
-      //clear the dropdown
+      //clear the dropdown and search input
       searchDropDown.innerHTML = "";
+      search.value = "";
       currentLat = e.target.dataset.lat;
       currentLon = e.target.dataset.lon;
       city = e.target.dataset.name; 
