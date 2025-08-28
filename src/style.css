@@ -10,10 +10,9 @@ body {
 }
 
 .glassy {
-  background: rgba(255, 255, 255, 0.66);
+  background: #ededed;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(0.2px);
-  -webkit-backdrop-filter: blur(0.2px);
 }
 
 .container {
@@ -84,7 +83,11 @@ a {
 }
 
 .search-result-item:hover {
-  background-color: cornflowerblue;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .switch {
@@ -178,6 +181,13 @@ a {
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+}
+
+.forecast-day:hover {
+  background: #ededed;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(0.5px);
+  border-radius: 0.5rem;
 }
 
 .forecast-day p {
