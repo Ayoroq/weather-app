@@ -394,7 +394,7 @@ function createForecastSection(days, tempUnit, location, currentWeather) {
     const dayInfo = document.createElement('p');
     dayInfo.textContent = formatDate(day.date) + ' ';
     const tempSpan = document.createElement('span');
-    tempSpan.textContent = `${Math.round(day.tempMin)}${tempUnit} ---- ${Math.round(day.tempMax)}${tempUnit}`;
+    tempSpan.textContent = `${Math.round(day.tempMin)}${tempUnit} – ${Math.round(day.tempMax)}${tempUnit}`;
     dayInfo.appendChild(tempSpan);
     
     const img = document.createElement('img');
