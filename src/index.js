@@ -6,6 +6,10 @@ import { fetchCities } from "./geo-location.js";
 import { renderSearchResults } from "./render-weather.js";
 import renderWeather from "./render-weather.js";
 
+// Constants
+const DEBOUNCE_DELAY = 300;
+const MIN_SEARCH_LENGTH = 2;
+
 let city;
 let currentLat;
 let currentLon;
@@ -35,10 +39,24 @@ function debounce(func, delay) {
   };
 }
 
+// Helper function to select a city and load its weather
+async function selectCity(cityElement) {
+  searchDropDown.innerHTML = "";
+  search.value = "";
+  currentLat = cityElement.dataset.lat;
+  currentLon = cityElement.dataset.lon;
+  city = cityElement.dataset.name;
+  
+  const selectedUnit = document.querySelector('input[name="unit"]:checked');
+  const unitGroup = selectedUnit.value === "C" ? "metric" : "us";
+  
+  await fetchAndRenderWeather(currentLat, currentLon, unitGroup, city);
+}
+
 async function searchForCities() {
   try {
     const query = search.value.trim();
-    if (query.length < 2) {
+    if (query.length < MIN_SEARCH_LENGTH) {
       searchDropDown.innerHTML = "";
       return;
     }
@@ -50,7 +68,7 @@ async function searchForCities() {
 }
 
 // rendering search result after typing
-const debouncedSearch = debounce(searchForCities, 300);
+const debouncedSearch = debounce(searchForCities, DEBOUNCE_DELAY);
 search.addEventListener("input", debouncedSearch);
 
 // keyboard navigation for search
@@ -59,16 +77,7 @@ search.addEventListener("keydown", async (e) => {
     const firstResult = searchDropDown.querySelector(".search-result-item");
     if (firstResult) {
       try {
-        searchDropDown.innerHTML = "";
-        search.value = "";
-        currentLat = firstResult.dataset.lat;
-        currentLon = firstResult.dataset.lon;
-        city = firstResult.dataset.name;
-        
-        const selectedUnit = document.querySelector('input[name="unit"]:checked');
-        const unitGroup = selectedUnit.value === "C" ? "metric" : "us";
-        
-        await fetchAndRenderWeather(currentLat, currentLon, unitGroup, city);
+        await selectCity(firstResult);
       } catch (error) {
         console.error("Failed to load selected city:", error);
       }
@@ -80,17 +89,7 @@ search.addEventListener("keydown", async (e) => {
 searchDropDown.addEventListener("click", async (e) => {
   if (e.target.classList.contains("search-result-item")) {
     try {
-      //clear the dropdown and search input
-      searchDropDown.innerHTML = "";
-      search.value = "";
-      currentLat = e.target.dataset.lat;
-      currentLon = e.target.dataset.lon;
-      city = e.target.dataset.name; 
-
-      const selectedUnit = document.querySelector('input[name="unit"]:checked');
-      const unitGroup = selectedUnit.value === "C" ? "metric" : "us";
-      
-      await fetchAndRenderWeather(currentLat, currentLon, unitGroup, city);
+      await selectCity(e.target);
     } catch (error) {
       console.error("Failed to load selected city:", error);
     }
