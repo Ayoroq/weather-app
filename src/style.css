@@ -9,6 +9,13 @@ body {
   font-style: normal;
 }
 
+.glassy {
+  background: rgba(255, 255, 255, 0.66);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(0.2px);
+  -webkit-backdrop-filter: blur(0.2px);
+}
+
 .container {
   min-height: 100vh;
   width: 1000px;
@@ -64,13 +71,15 @@ a {
   flex-direction: column;
   gap: 0.5rem;
   width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .search-result-item {
   text-align: left;
   background: none;
   border: none;
-  padding: 0;
+  padding: 0.5rem;
   cursor: pointer;
 }
 
@@ -136,45 +145,44 @@ a {
 }
 
 /* This is for the 3rd section. The summary */
-.summary-container{
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.summary-head{
-    font-size: 1.25rem;
+.summary-head {
+  font-size: 1.25rem;
 }
-
 
 /* This is for the 4th section. The forecast */
-.forecast-container{
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.forecast-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.forecast-head{
-    font-size: 1.25rem;
+.forecast-head {
+  font-size: 1.25rem;
 }
 
-.forecast-days{
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
+.forecast-days {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
 }
 
-.forecast-day{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
+.forecast-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
 }
 
-.forecast-day p{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
+.forecast-day p {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }

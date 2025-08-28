@@ -27,17 +27,30 @@ export function renderSearchResults(cities) {
 
 // Map weather conditions to icon filenames
 const weatherIcons = {
+  "snow": "snow.svg",
+  "snow-showers-day": "snow.svg",
+  "snow-showers-night": "snow.svg",
+  "thunder-rain": "thunderstorm.svg",
+  "thunder-showers-day": "thunderstorm.svg",
+  "thunder-showers-night": "thunderstorm.svg",
+  "rain": "rain.svg",
+  "showers-day": "light-rain.svg",
+  "showers-night": "light-rain.svg",
+  "fog": "fog.svg",
+  "wind": "wind.svg",
+  "cloudy": "cloud.svg",
+  "partly-cloudy-day": "partial-cloud.svg",
+  "partly-cloudy-night": "partial-cloud.svg",
+  "clear-day": "sunny.svg",
+  "clear-night": "clear-night.svg",
+  // Legacy mappings for backward compatibility
   "clear": "sunny.svg",
   "sunny": "sunny.svg",
   "partly cloudy": "partial-cloud.svg",
-  "cloudy": "cloud.svg",
   "overcast": "cloud.svg",
-  "rain": "rain.svg",
   "light rain": "light-rain.svg",
   "heavy rain": "rain.svg",
-  "thunderstorm": "thunderstorm.svg",
-  "snow": "snow.svg",
-  "fog": "fog.svg"
+  "thunderstorm": "thunderstorm.svg"
 };
 
 function getWeatherIcon(condition) {
