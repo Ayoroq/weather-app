@@ -20,6 +20,15 @@ export function renderSearchResults(cities) {
   const searchDropDown = document.querySelector(".search-dropdown");
   searchDropDown.innerHTML = ""; // Clear previous results
   try {
+    if (cities.length === 0) {
+      const noResultsElement = document.createElement("button");
+      noResultsElement.classList.add("search-result-item");
+      noResultsElement.disabled = true;
+      noResultsElement.textContent = "No results found";
+      searchDropDown.appendChild(noResultsElement);
+      return;
+    }
+    
     cities.forEach((city) => {
       const cityElement = document.createElement("button");
       cityElement.classList.add("search-result-item");

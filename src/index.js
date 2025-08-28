@@ -75,7 +75,7 @@ search.addEventListener("input", debouncedSearch);
 search.addEventListener("keydown", async (e) => {
   if (e.key === "Enter") {
     const firstResult = searchDropDown.querySelector(".search-result-item");
-    if (firstResult) {
+    if (firstResult && !firstResult.disabled) {
       try {
         await selectCity(firstResult);
       } catch (error) {
